@@ -23,10 +23,17 @@ jobs:
           pip install -r src/user_service/requirements.txt
           pip install pytest
 
-      - name: Validate SAM template
-        run: sam validate
+      - name: Validate SAM template        
+        run: |
+          source .venv/bin/activate
+          sam validate
 
       - name: Run tests
         run: |
           source .venv/bin/activate
           pytest
+
+      - name: Sam build
+        run: |
+          source .venv/bin/activate
+          sam build --use-container
