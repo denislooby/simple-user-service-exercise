@@ -1,0 +1,35 @@
+name: Deploy to AWS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: AWS
+      url: https://console.aws.amazon.com/cloudformation
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::694880089996:role/Github_Actions_Role
+          aws-region: eu-west-1
+
+      - name: Build with SAM
+          sam build --use-container --region eu-west-1
+
+      - name: Deploy with SAM
+        run: |
+          sam deploy --stack-name lambda-user-service \
+                     --region eu-west-1 \
+                     --capabilities CAPABILITY_IAM \
+                     --no-confirm-changeset \
+                     --no-fail-on-empty-changeset

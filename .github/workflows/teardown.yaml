@@ -1,0 +1,23 @@
+name: Teardown AWS Stack
+
+on:
+  workflow_dispatch:
+
+jobs:
+  delete-stack:
+    runs-on: ubuntu-latest
+    environment: AWS
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::694880089996:role/Github_Actions_Role
+          aws-region: eu-west-1
+
+      - name: Delete stack
+        run: sam delete --stack-name lambda-user-service --no-prompts
