@@ -24,6 +24,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Build with SAM
+        run: |
           sam build --use-container --region eu-west-1
 
       - name: Deploy with SAM
