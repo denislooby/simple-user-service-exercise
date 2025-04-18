@@ -172,3 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# SAM build and deployment artifacts
+.aws-sam/
+samconfig.toml
+
+# IDE and system files
+.DS_Store
+.vscode/
+.idea/

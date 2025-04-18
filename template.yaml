@@ -1,0 +1,158 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  simple-user-service-exercise
+
+  Sample SAM Template for simple-user-service-exercise
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Runtime: python3.10
+    Timeout: 30
+
+Resources:
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref UserTableName
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  CreateUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.create_user.lambda_handler
+      Events:
+        CreateUser:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /user
+            Method: post
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+            - Write
+
+  UpdatePutUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.update_user_put.lambda_handler
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /user/{email}
+            Method: put
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+            - Write
+
+  UpdatePatchUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.update_user_patch.lambda_handler
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /user/{email}
+            Method: patch
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+            - Write
+
+  DeleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.delete_user.lambda_handler
+      Events:
+        DeleteUser:
+          Type: Api
+          Properties:
+            Path: /user/{email}
+            Method: delete
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+            - Write
+
+  ListUsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.list_users.lambda_handler
+      Events:
+        ListUsers:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: get
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+
+  LoginUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user_service/
+      Handler: user_handlers.login_user.lambda_handler
+      Events:
+        LoginUser:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: post
+    Connectors:
+      UserTableAccess:
+        Properties:
+          Destination:
+            Id: UserTable
+          Permissions:
+            - Read
+            - Write
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  UserApiBaseUrl:
+    Description: "Base URL for the deployed User API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+Parameters:
+  UserTableName:
+    Type: String
+    Default: UserTable
+    Description: Name of the DynamoDB user table

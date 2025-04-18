@@ -1,0 +1,7 @@
+{
+    "pathParameters": {
+      "email": "denis@example.com"
+    },
+    "body": "{\"password\": \"patchedsecret\"}"
+  }
+  
