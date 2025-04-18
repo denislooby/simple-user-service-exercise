@@ -17,23 +17,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv .venv
-          source .venv/bin/activate
           pip install --upgrade pip
           pip install -r src/user_service/requirements.txt
           pip install pytest
 
       - name: Validate SAM template        
         run: |
-          source .venv/bin/activate
           sam validate --region eu-west-1
 
       - name: Run tests
         run: |
-          source .venv/bin/activate
           pytest tests
 
       - name: Sam build
         run: |
-          source .venv/bin/activate
           sam build --use-container  --region eu-west-1
