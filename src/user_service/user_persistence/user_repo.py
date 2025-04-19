@@ -12,7 +12,6 @@ def get_table():
     if table:
         return table
 
-    endpoint_url = os.getenv("DYNAMODB_ENDPOINT")
     region = os.getenv("AWS_REGION", "eu-west-1")
 
     if local_run:

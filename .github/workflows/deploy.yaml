@@ -15,11 +15,6 @@ jobs:
       name: AWS
       url: https://console.aws.amazon.com/cloudformation
 
-    env:
-      SANITIZED_BRANCH: ${{ github.ref_name == 'main' && '' || github.ref_name.replace('/', '-') }} # Can't use / in resource names
-      STACK_NAME: ${{ github.ref_name == 'main' && env.DEFAULT_STACK_NAME || format('{0}-{1}', env.DEFAULT_STACK_NAME, env.SANITIZED_BRANCH) }}
-      USER_TABLE: ${{ github.ref_name == 'main' && env.DEFAULT_TABLE_NAME || format('{0}-{1}', env.DEFAULT_TABLE_NAME, env.SANITIZED_BRANCH) }}
-
     permissions:
       id-token: write
       contents: read
@@ -32,6 +27,18 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github_Actions_Role
           aws-region: ${{ env.AWS_REGION }}
+
+
+      - name: Set environment variables
+        run: |
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "STACK_NAME=${{ env.DEFAULT_STACK_NAME }}" >> $GITHUB_ENV
+            echo "USER_TABLE=${{ env.DEFAULT_TABLE_NAME }}" >> $GITHUB_ENV
+          else
+            SAFE_BRANCH=$(echo "$BRANCH_NAME" | tr '/' '-') # Can't use / in resource names
+            echo "STACK_NAME=${{ env.DEFAULT_STACK_NAME }}-$SAFE_BRANCH" >> $GITHUB_ENV
+            echo "USER_TABLE=${{ env.DEFAULT_TABLE_NAME }}-$SAFE_BRANCH" >> $GITHUB_ENV
+          fi
 
       - name: Build with SAM
         run: |
