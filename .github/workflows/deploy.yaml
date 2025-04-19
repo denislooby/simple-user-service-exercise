@@ -47,7 +47,7 @@ jobs:
       - name: Deploy with SAM
         run: |
           sam deploy --stack-name $STACK_NAME \
-                     --parameter-overrides USER_TABLE=$USER_TABLE \
+                     --parameter-overrides "UserTableName=$USER_TABLE" \
                      --region $AWS_REGION \
                      --capabilities CAPABILITY_IAM \
                      --resolve-s3 \
