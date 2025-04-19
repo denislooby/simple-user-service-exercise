@@ -31,3 +31,13 @@ def test_delete_user_not_found(mock_repo):
     response = delete_user.lambda_handler(event, None)
 
     assert response["statusCode"] == 404
+
+@patch("user_handlers.delete_user.user_repo")
+def test_delete_user_missing_path(mock_repo):
+    mock_repo.get_user_by_email.return_value = None
+    event = {} # Just blank 
+
+    response = delete_user.lambda_handler(event, None)
+
+    assert response["statusCode"] == 400
+    assert "Missing path parameter: email" in response["body"]

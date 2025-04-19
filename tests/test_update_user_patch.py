@@ -38,3 +38,13 @@ def test_update_user_missing(mock_repo):
     response = update_user_patch.lambda_handler(event, None)
 
     assert response["statusCode"] == 404
+
+@patch("user_handlers.update_user_patch.user_repo")
+def test_update_user_missing_path(mock_repo):
+    mock_repo.get_user_by_email.return_value = None
+    event = event_with_body(mock_user)
+
+    response = update_user_patch.lambda_handler(event, None)
+
+    assert response["statusCode"] == 400
+    assert "Missing path parameter: email" in response["body"]

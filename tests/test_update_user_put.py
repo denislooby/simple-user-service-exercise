@@ -48,3 +48,13 @@ def test_update_user_obj_incomplete(mock_repo):
     assert response["statusCode"] == 400
     assert "Field required" in response["body"]
 
+@patch("user_handlers.update_user_put.user_repo")
+def test_update_user_missing_path(mock_repo):
+    mock_repo.get_user_by_email.return_value = None
+    user = mock_user.copy()
+    event = event_with_body(user)
+
+    response = update_user_put.lambda_handler(event, None)
+
+    assert response["statusCode"] == 400
+    assert "Missing path parameter: email" in response["body"]

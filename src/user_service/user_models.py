@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 
 class UserCreate(BaseModel):
-    email: EmailStr = Field(..., example="user@example.com")
+    email: EmailStr = Field(..., json_schema_extra={"example":"user@example.com"})
     name: str = Field(..., min_length=1)
     password: str = Field(..., min_length=6)
 
