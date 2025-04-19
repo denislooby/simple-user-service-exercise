@@ -118,7 +118,7 @@ There is a noticable delay of a second or two as the endpoints start on first ac
 Subsequent access is fast so this is a tradeoff for the scalability.
 Warm instances could be used for extra cost.
 
-## Alternative Imnplementations 
+## Alternative Implementations 
 Another option for implemention would be a containerised python application using the FastAPI framework.
 This would use the SQLAlchemy framework for DB access.
 This would allow SQLite to be used for a small scale service and external PostgreSQL to scale more.
