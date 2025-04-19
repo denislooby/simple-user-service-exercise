@@ -3,6 +3,10 @@ name: Teardown AWS Stack
 on:
   workflow_dispatch:
 
+env:
+  AWS_REGION: eu-west-1
+  DEFAULT_STACK_NAME: lambda-user-service
+
 jobs:
   delete-stack:
     runs-on: ubuntu-latest
@@ -12,12 +16,17 @@ jobs:
       id-token: write
       contents: read
 
+    env:
+      BRANCH_NAME: ${{ github.ref_name }}
+      SANITIZED_BRANCH: ${{ github.ref_name == 'main' && '' || github.ref_name.replace('/', '-') }}
+      STACK_NAME: ${{ github.ref_name == 'main' && env.DEFAULT_STACK_NAME || format('{0}-{1}', env.DEFAULT_STACK_NAME, env.SANITIZED_BRANCH) }}
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::694880089996:role/Github_Actions_Role
-          aws-region: eu-west-1
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Delete stack
-        run: sam delete --stack-name lambda-user-service --no-prompts
+        run: sam delete --stack-name $STACK_NAME --no-prompts

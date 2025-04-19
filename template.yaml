@@ -27,6 +27,9 @@ Resources:
   CreateUserFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.create_user.lambda_handler
       Events:
@@ -47,6 +50,9 @@ Resources:
   UpdatePutUserFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.update_user_put.lambda_handler
       Events:
@@ -67,6 +73,9 @@ Resources:
   UpdatePatchUserFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.update_user_patch.lambda_handler
       Events:
@@ -87,6 +96,9 @@ Resources:
   DeleteUserFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.delete_user.lambda_handler
       Events:
@@ -107,6 +119,9 @@ Resources:
   ListUsersFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.list_users.lambda_handler
       Events:
@@ -126,6 +141,9 @@ Resources:
   LoginUserFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Environment:
+        Variables:
+          USER_TABLE: !Ref UserTableName
       CodeUri: src/user_service
       Handler: user_handlers.login_user.lambda_handler
       Events:

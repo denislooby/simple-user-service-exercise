@@ -3,12 +3,22 @@ name: Deploy to AWS
 on:
   workflow_dispatch:
 
+env:
+  AWS_REGION: eu-west-1
+  DEFAULT_STACK_NAME: lambda-user-service
+  DEFAULT_TABLE_NAME: UserTable
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
       name: AWS
       url: https://console.aws.amazon.com/cloudformation
+
+    env:
+      SANITIZED_BRANCH: ${{ github.ref_name == 'main' && '' || github.ref_name.replace('/', '-') }} # Can't use / in resource names
+      STACK_NAME: ${{ github.ref_name == 'main' && env.DEFAULT_STACK_NAME || format('{0}-{1}', env.DEFAULT_STACK_NAME, env.SANITIZED_BRANCH) }}
+      USER_TABLE: ${{ github.ref_name == 'main' && env.DEFAULT_TABLE_NAME || format('{0}-{1}', env.DEFAULT_TABLE_NAME, env.SANITIZED_BRANCH) }}
 
     permissions:
       id-token: write
@@ -20,17 +30,18 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::694880089996:role/Github_Actions_Role
-          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github_Actions_Role
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Build with SAM
         run: |
-          sam build --use-container --region eu-west-1
+          sam build --use-container --region $AWS_REGION
 
       - name: Deploy with SAM
         run: |
-          sam deploy --stack-name lambda-user-service \
-                     --region eu-west-1 \
+          sam deploy --stack-name $STACK_NAME \
+                     --parameter-overrides USER_TABLE=$USER_TABLE \
+                     --region $AWS_REGION \
                      --capabilities CAPABILITY_IAM \
                      --resolve-s3 \
                      --no-confirm-changeset \
