@@ -5,6 +5,19 @@ from user_persistence import user_repo
 from user_models import UserUpdatePut
 
 def lambda_handler(event, context):
+    """
+    Handle user update request.
+
+    Validates the incoming request body and updates the user in DynamoDB.
+    This one is for the PATCH endpoint so allows partial objects in the body
+
+    Args:
+        event (dict): AWS Lambda event object. Expects 'body' with updated user JSON and pathParameters with email.
+        context (LambdaContext): AWS Lambda context (unused).
+
+    Returns:
+        dict: Response with statusCode and body.
+    """
     if not event.get("pathParameters") or not event["pathParameters"].get("email"):
         return {"statusCode": 400, "body": json.dumps({"message": "Missing path parameter: email"}) }
     

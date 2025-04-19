@@ -6,6 +6,18 @@ from user_persistence import user_repo
 from user_models import LoginRequest
 
 def lambda_handler(event, context):
+    """
+    Handle user login request.
+
+    Validates the incoming request body, checks if email and password match DB.
+
+    Args:
+        event (dict): AWS Lambda event object. Expects JSON 'body' with user email and password.
+        context (LambdaContext): AWS Lambda context (unused).
+
+    Returns:
+        dict: Response with statusCode and body.
+    """
     try:
         user = LoginRequest.model_validate_json(event["body"])
     except ValidationError as e:

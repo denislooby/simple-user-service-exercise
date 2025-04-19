@@ -2,6 +2,18 @@ import json
 from user_persistence import user_repo
 
 def lambda_handler(event, context):
+    """
+    Handle user delete request.
+
+    Checks if users exists and deletes if it does
+
+    Args:
+        event (dict): AWS Lambda event object. Expects 'pathPArameters' with user email.
+        context (LambdaContext): AWS Lambda context (unused).
+
+    Returns:
+        dict: Response with statusCode.
+    """
     if not event.get("pathParameters") or not event["pathParameters"].get("email"):
         return {"statusCode": 400, "body": json.dumps({"message": "Missing path parameter: email"})}
     
