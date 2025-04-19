@@ -4,7 +4,6 @@ from unittest.mock import patch
 from user_handlers import update_user_patch
 
 mock_user = {
-    "email": "denis@example.com",
     "name": "Denis",
     "password": "secret",
     "last_login": None
@@ -24,7 +23,7 @@ def test_update_user_success(mock_repo):
     mock_repo.update_user.return_value = {"ResponseMetadata": {"HTTPStatusCode": 200}}
     updated = mock_user.copy()
     updated["name"] = "Updated"
-    event = event_with_path_and_body({"email": mock_user["email"]}, updated)
+    event = event_with_path_and_body({"email": "denis@example.com"}, updated)
 
     response = update_user_patch.lambda_handler(event, None)
 
@@ -33,7 +32,7 @@ def test_update_user_success(mock_repo):
 @patch("user_handlers.update_user_patch.user_repo")
 def test_update_user_missing(mock_repo):
     mock_repo.get_user_by_email.return_value = None
-    event = event_with_path_and_body({"email": mock_user["email"]}, mock_user)
+    event = event_with_path_and_body({"email": "denis@example.com"}, mock_user)
 
     response = update_user_patch.lambda_handler(event, None)
 
