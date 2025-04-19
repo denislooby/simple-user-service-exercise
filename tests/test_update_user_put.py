@@ -27,7 +27,6 @@ def test_update_user_success(mock_repo):
     event = event_with_path_and_body({"email": mock_user["email"]}, updated)
 
     response = update_user_put.lambda_handler(event, None)
-    print(response)
     assert response["statusCode"] == 204
 
 @patch("user_handlers.update_user_put.user_repo")

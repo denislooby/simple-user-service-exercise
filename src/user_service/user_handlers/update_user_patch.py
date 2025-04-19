@@ -5,6 +5,9 @@ from user_persistence import user_repo
 from user_models import UserUpdatePatch
 
 def lambda_handler(event, context):
+    if not event.get("pathParameters") or not event["pathParameters"].get("email"):
+        return {"statusCode": 400, "body": "Missing path parameter: email"}
+    
     email = event["pathParameters"]["email"]
     try:
         user = UserUpdatePatch.model_validate_json(event["body"])

@@ -2,7 +2,9 @@ import json
 from user_persistence import user_repo
 
 def lambda_handler(event, context):
-
+    if not event.get("pathParameters") or not event["pathParameters"].get("email"):
+        return {"statusCode": 400, "body": "Missing path parameter: email"}
+    
     email = event["pathParameters"]["email"]
 
     # Check the user exists first as delete in dynamodb is always success
