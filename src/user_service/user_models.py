@@ -1,3 +1,11 @@
+"""
+Pydantic models for user data validation.
+Models:
+    - UserCreate: Model for creating a new user.
+    - UserUpdate: Model for full updates to a user record.
+    - UserPatch: Model for partial updates to a user record.
+    - UserLogin: Model for login requests.
+"""
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 

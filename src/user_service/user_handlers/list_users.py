@@ -1,3 +1,8 @@
+"""
+Lambda function for the GET /users endpoint.
+
+Returns a list of all users.
+"""
 import json
 from user_persistence import user_repo
 

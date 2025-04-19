@@ -1,3 +1,8 @@
+"""
+Lambda function for the POST /login endpoint.
+
+Validates the email and password provided match those in the DB
+"""
 import json
 from datetime import datetime, timezone
 

@@ -1,3 +1,8 @@
+"""
+Lambda function for the DELETE /user endpoint.
+
+Deletes user in DynamoDB after validating input and checking it exists.
+"""
 import json
 from user_persistence import user_repo
 

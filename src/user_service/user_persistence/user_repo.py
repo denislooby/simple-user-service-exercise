@@ -1,3 +1,11 @@
+"""
+Abstraction layer for user-related persistence operations in DynamoDB.
+
+This module supports both local (SAM CLI) and cloud execution environments,
+automatically switching endpoints based on AWS_SAM_LOCAL.
+For LOCAL a dynamoDB instance needs to be reachable at "http://host.docker.internal:8000"
+
+"""
 import boto3
 import os
 
@@ -6,8 +14,15 @@ dynamodb = None
 table = None
 
 def get_table():
-    # Need to defer creating dynamodb and table to function 
-    # or unit tests try to init it on import
+    """
+    Get the users table from DynamoDB
+    Need to wrap boto3 dynamodb calls to function to avoid calling AWS on import in pytests
+    Sets a global to avoid repeated calls to boto3
+    Args:
+        None
+    Returns:
+        AWS DynamoDB Table object
+    """
     global table, dynamodb
     if table:
         return table

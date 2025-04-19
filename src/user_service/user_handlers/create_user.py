@@ -1,3 +1,8 @@
+"""
+Lambda function for the POST /user endpoint.
+
+Creates a new user in DynamoDB after validating input and ensuring no duplicates exist.
+"""
 import json
 
 from pydantic import ValidationError

@@ -1,3 +1,8 @@
+"""
+Lambda function for the PUT /user endpoint.
+
+Updates an existing user in DynamoDB after validating input.
+"""
 import json
 
 from pydantic import ValidationError
