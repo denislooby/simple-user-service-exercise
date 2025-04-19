@@ -1,11 +1,17 @@
 import json
 from datetime import datetime, timezone
+
+from pydantic import ValidationError
 from user_persistence import user_repo
+from user_models import LoginRequest
 
 def lambda_handler(event, context):
-    body = json.loads(event["body"])
-    email = body["email"]
-    password = body["password"]
+    try:
+        user = LoginRequest.model_validate_json(event["body"])
+    except ValidationError as e:
+        return { "statusCode": 400, "body": f"Invalid input: {e.errors()}" }
+    email = user.email
+    password = user.password
 
     user = user_repo.get_user_by_email(email, consistent_read=True)
     if not user or user.get("password") != password:
