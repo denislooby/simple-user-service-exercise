@@ -9,13 +9,13 @@ def lambda_handler(event, context):
     try:
         user = LoginRequest.model_validate_json(event["body"])
     except ValidationError as e:
-        return { "statusCode": 400, "body": f"Invalid input: {e.errors()}" }
+        return {"statusCode": 400, "body": json.dumps({"message": "Invalid input", "errors": e.errors()})}
     email = user.email
     password = user.password
 
     user = user_repo.get_user_by_email(email, consistent_read=True)
     if not user or user.get("password") != password:
-        return {"statusCode": 401, "body": "Invalid email or password"}
+        return {"statusCode": 401, "body": json.dumps({"message": "Invalid email or password"}) }
 
     # Set last login time
     user["last_login"] = datetime.now(tz=timezone.utc).isoformat()

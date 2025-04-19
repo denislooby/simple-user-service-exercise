@@ -8,7 +8,7 @@ def lambda_handler(event, context):
     try:
         user = UserCreate.model_validate_json(event["body"])
     except ValidationError as e:
-        return { "statusCode": 400, "body": f"Invalid input: {e.errors()}" }
+        return {"statusCode": 400, "body": json.dumps({"message": "Invalid input", "errors": e.errors()})}
     email = user.email
     
     if user_repo.get_user_by_email(email): # Can't add same email twice as we key off it.

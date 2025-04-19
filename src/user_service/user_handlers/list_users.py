@@ -6,4 +6,6 @@ def lambda_handler(event, context):
         users = user_repo.list_users()
         return {"statusCode": 200, "body": json.dumps(users)}
     except Exception as e:
-        return {"statusCode": 500, "body": f"Error listing users: {str(e)}"}
+        return {"statusCode": 500, "body": json.dumps({"message": "Error listing users", "errors": e.errors})}
+    
+    
